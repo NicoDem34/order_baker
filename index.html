@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <title>Formulaire de commande - Boulangerie de Goult</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 data-lang="title">Commande pour la boulangerie de Goult</h1>
+            <div class="language-selector">
+                <button id="lang-fr" class="lang-btn active">FR</button>
+                <button id="lang-en" class="lang-btn">EN</button>
+            </div>
+        </header>
+
+        <div class="info-section">
+            <p data-lang="delivery-info">Livraison chaque matin vers 8h (boulangerie fermée le lundi, sauf juillet et août)</p>
+            <p data-lang="order-info">Commande à passer avant 11h la veille par WhatsApp</p>
+        </div>
+
+        <form id="orderForm">
+            <div class="customer-info">
+                <div class="form-group">
+                    <label for="customerName" data-lang="name-label">Nom / Name :</label>
+                    <input type="text" id="customerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="deliveryDate" data-lang="date-label">Date de livraison / Delivery date :</label>
+                    <input type="date" id="deliveryDate" required>
+                </div>
+            </div>
+
+            <div class="accordion" id="orderAccordion">
+                <!-- Les accordéons seront générés par JavaScript -->
+            </div>
+
+            <div class="order-summary">
+                <button type="button" id="showSummary" data-lang="show-summary">Voir Récapitulatif / View Summary</button>
+                <div id="total-display" class="total-display"></div>
+            </div>
+        </form>
+
+        <!-- Modal récapitulatif -->
+        <div id="summaryModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 data-lang="summary-title">Récapitulatif de commande / Order Summary</h2>
+                <div id="summaryContent"></div>
+                <div id="summaryTotal"></div>
+                <button id="whatsappBtn" data-lang="whatsapp-btn">Copier dans WhatsApp / Copy to WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Données du PDF intégrées
+        const DATA = {
+            categories: [
+                {
+                    name_fr: "Pains",
+                    name_en: "Breads",
+                    emoji: "🥖",
+                    products: [
+                        {
+                            id: 1,
+                            name_fr: "Pain complet (400g)",
+                            name_en: "Wholemeal bread (400g)",
+                            description_fr: "Pain à base de farine complète, riche en fibres, au goût rustique.",
+                            description_en: "Bread made from whole wheat flour, rich in fiber, with a rustic taste.",
+                            price: 7.25,
+                            availability: ["mardi", "jeudi", "samedi"],
+                            availability_en: ["Tuesday", "Thursday", "Saturday"]
+                        },
+                        {
+                            id: 2,
+                            name_fr: "Pain au céréales (400g)",
+                            name_en: "Multigrain bread (400g)",
+                            description_fr: "Pain garni de graines variées, saveur légèrement toastée.",
+                            description_en: "Bread filled with various seeds, offering a slightly toasted flavor.",
+                            price: 7.25,
+                            availability: ["mercredi"],
+                            availability_en: ["Wednesday"]
+                        },
+                        {
+                            id: 3,
+                            name_fr: "Pain aux noix (400g)",
+                            name_en: "Walnut bread (400g)",
+                            description_fr: "Pain moelleux avec des morceaux de noix, parfait avec du fromage.",
+                            description_en: "Soft bread with walnut pieces, perfect with cheese.",
+                            price: 7.25,
+                            availability: ["vendredi"],
+                            availability_en: ["Friday"]
+                        },
+                        {
+                            id: 4,
+                            name_fr: "Pain au maïs (400g)",
+                            name_en: "Corn bread (400g)",
+                            description_fr: "Pain jaune doré, légèrement sucré grâce à la farine de maïs.",
+                            description_en: "Golden yellow bread, slightly sweet thanks to corn flour.",
+                            price: 7.25,
+                            availability: ["vendredi"],
+                            availability_en: ["Friday"]
+                        },
+                        {
+                            id: 5,
+                            name_fr: "Pain épeautre miel (400g)",
+                            name_en: "Spelt honey bread (400g)",
+                            description_fr: "Pain doux à l'épeautre, subtilement parfumé au miel.",
+                            description_en: "Soft spelt bread, subtly flavored with honey.",
+                            price: 7.25,
+                            availability: ["vendredi", "dimanche"],
+                            availability_en: ["Friday", "Sunday"]
+                        },
+                        {
+                            id: 6,
+                            name_fr: "Pain de campagne (400g)",
+                            name_en: "Country bread (400g)",
+                            description_fr: "Pain traditionnel à la mie dense, au goût authentique.",
+                            description_en: "Traditional bread with a dense crumb and authentic flavor.",
+                            price: 7.25,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 7,
+                            name_fr: "Pain bûcheron (450g)",
+                            name_en: "Lumberjack bread (450g)",
+                            description_fr: "Pain rustique, riche en graines et céréales, très nourrissant.",
+                            description_en: "Rustic bread, rich in seeds and grains, very filling.",
+                            price: 8.00,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 8,
+                            name_fr: "Baguette simple",
+                            name_en: "Classic baguette",
+                            description_fr: "Baguette classique, croûte croustillante, mie légère.",
+                            description_en: "Traditional baguette, crispy crust, light crumb.",
+                            price: 1.10,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 9,
+                            name_fr: "Baguette festive",
+                            name_en: "Festive baguette",
+                            description_fr: "Baguette spéciale, souvent enrichie de graines ou de saveurs originales.",
+                            description_en: "Special baguette, often enriched with seeds or unique flavors.",
+                            price: 1.30,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 10,
+                            name_fr: "Baguette festive graine",
+                            name_en: "Festive seeded baguette",
+                            description_fr: "Baguette garnie de graines variées, croquante et savoureuse.",
+                            description_en: "Baguette topped with various seeds, crunchy and tasty.",
+                            price: 1.40,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        }
+                    ]
+                },
+                {
+                    name_fr: "Viennoiseries",
+                    name_en: "Viennoiseries",
+                    emoji: "🥐",
+                    products: [
+                        {
+                            id: 11,
+                            name_fr: "Grosse brioche au beurre",
+                            name_en: "Large butter brioche",
+                            description_fr: "Brioche moelleuse et dorée, riche en beurre, idéale au petit-déjeuner.",
+                            description_en: "Soft, golden brioche, rich in butter, perfect for breakfast.",
+                            price: 5.50,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 12,
+                            name_fr: "Petite brioche au beurre",
+                            name_en: "Small butter brioche",
+                            description_fr: "Version individuelle de la brioche, pour une pause gourmande.",
+                            description_en: "Individual-sized brioche, for a sweet treat.",
+                            price: 1.20,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 13,
+                            name_fr: "Pain au raisin",
+                            name_en: "Raisin swirl",
+                            description_fr: "Pâtisserie roulée garnie de crème pâtissière et de raisins secs.",
+                            description_en: "Rolled pastry filled with custard and raisins.",
+                            price: 1.40,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 14,
+                            name_fr: "Choco suisse",
+                            name_en: "Swiss chocolate pastry",
+                            description_fr: "Viennoiserie rectangulaire, crème pâtissière et pépites de chocolat.",
+                            description_en: "Rectangular pastry with custard and chocolate chips.",
+                            price: 1.40,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 15,
+                            name_fr: "Brioche au sucre",
+                            name_en: "Sugar brioche",
+                            description_fr: "Brioche parsemée de grains de sucre croquants.",
+                            description_en: "Brioche topped with crunchy sugar pearls.",
+                            price: 1.20,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 16,
+                            name_fr: "Mini-viennoiseries",
+                            name_en: "Mini-pastries",
+                            description_fr: "Petites versions des viennoiseries classiques, idéales pour un assortiment.",
+                            description_en: "Small versions of classic pastries, perfect for variety.",
+                            price: 0.60,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 17,
+                            name_fr: "Pain au chocolat",
+                            name_en: "Chocolate croissant (pain au chocolat)",
+                            description_fr: "Viennoiserie rectangulaire fourrée de chocolat.",
+                            description_en: "Rectangular pastry filled with chocolate.",
+                            price: 1.20,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 18,
+                            name_fr: "Croissant au chocolat",
+                            name_en: "Chocolate croissant",
+                            description_fr: "Croissant traditionnel garni de chocolat.",
+                            description_en: "Traditional croissant filled with chocolate.",
+                            price: 1.30,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 19,
+                            name_fr: "Croissant au beurre",
+                            name_en: "Butter croissant",
+                            description_fr: "Croissant feuilleté, pur beurre, doré et croustillant.",
+                            description_en: "Flaky, all-butter croissant, golden and crispy.",
+                            price: 1.10,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 20,
+                            name_fr: "Chausson aux pommes",
+                            name_en: "Apple turnover",
+                            description_fr: "Pâte feuilletée garnie de compote de pommes.",
+                            description_en: "Puff pastry filled with apple compote.",
+                            price: 2.70,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 21,
+                            name_fr: "Chausson au citron",
+                            name_en: "Lemon turnover",
+                            description_fr: "Pâte feuilletée garnie de crème au citron.",
+                            description_en: "Puff pastry filled with lemon cream.",
+                            price: 2.70,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 22,
+                            name_fr: "Croissant aux amandes",
+                            name_en: "Almond croissant",
+                            description_fr: "Croissant garni de crème d'amande et amandes effilées.",
+                            description_en: "Croissant filled with almond cream and sliced almonds.",
+                            price: 2.50,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 23,
+                            name_fr: "Sacristin aux pépites de chocolat",
+                            name_en: "Chocolate chip sacristan",
+                            description_fr: "Torsade feuilletée, parsemée de pépites de chocolat.",
+                            description_en: "Twisted puff pastry sprinkled with chocolate chips.",
+                            price: 2.70,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 24,
+                            name_fr: "Sacristin aux amandes",
+                            name_en: "Almond sacristan",
+                            description_fr: "Torsade feuilletée, garnie d'amandes.",
+                            description_en: "Twisted puff pastry with almonds.",
+                            price: 2.70,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 25,
+                            name_fr: "Palmier",
+                            name_en: "Palmier",
+                            description_fr: "Feuilleté caramélisé en forme de cœur.",
+                            description_en: "Caramelized puff pastry shaped like a heart.",
+                            price: 2.50,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        }
+                    ]
+                },
+                {
+                    name_fr: "Petite Pâtisserie",
+                    name_en: "Small Pastries",
+                    emoji: "🍰",
+                    products: [
+                        {
+                            id: 26,
+                            name_fr: "Tarte poire frangipane",
+                            name_en: "Pear frangipane tart",
+                            description_fr: "Tartelette garnie de crème d'amande et de poires.",
+                            description_en: "Tartlet filled with almond cream and pears.",
+                            price: 2.90,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 27,
+                            name_fr: "Tarte au pignon",
+                            name_en: "Pine nut tart",
+                            description_fr: "Tartelette aux pignons de pin, texture fondante.",
+                            description_en: "Tartlet with pine nuts, soft texture.",
+                            price: 2.90,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 28,
+                            name_fr: "Tarte crumble fruits rouges ou pommes",
+                            name_en: "Red fruit/apple crumble tart",
+                            description_fr: "Tartelette recouverte de crumble, fruits rouges ou pommes.",
+                            description_en: "Tartlet topped with crumble, red fruits or apples.",
+                            price: 2.90,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 29,
+                            name_fr: "Far aux pommes",
+                            name_en: "Apple far Breton",
+                            description_fr: "Gâteau breton moelleux aux pommes.",
+                            description_en: "Soft Breton cake with apples.",
+                            price: 2.50,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 30,
+                            name_fr: "Macaron",
+                            name_en: "Macaron",
+                            description_fr: "Biscuit rond à la coque croquante, cœur moelleux, parfumé.",
+                            description_en: "Round biscuit with a crisp shell and soft, flavored center.",
+                            price: 4.00,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 31,
+                            name_fr: "Éclair café ou chocolat",
+                            name_en: "Coffee/chocolate éclair",
+                            description_fr: "Pâte à choux garnie de crème au café ou chocolat, glaçage brillant.",
+                            description_en: "Choux pastry filled with coffee or chocolate cream, shiny glaze.",
+                            price: 3.25,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 32,
+                            name_fr: "Florentin",
+                            name_en: "Florentine",
+                            description_fr: "Biscuit croustillant aux fruits confits et amandes, nappé de chocolat.",
+                            description_en: "Crispy biscuit with candied fruits and almonds, coated with chocolate.",
+                            price: 1.50,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 33,
+                            name_fr: "Brownie",
+                            name_en: "Brownie",
+                            description_fr: "Gâteau moelleux au chocolat, d'origine américaine, très fondant.",
+                            description_en: "Soft chocolate cake, American origin, very fudgy.",
+                            price: 2.50,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 34,
+                            name_fr: "Tarte Linzer",
+                            name_en: "Linzer tart",
+                            description_fr: "Tarte d'origine autrichienne, pâte aux noisettes, confiture de fruits rouges.",
+                            description_en: "Austrian tart with hazelnut pastry and red fruit jam.",
+                            price: 8.30,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 35,
+                            name_fr: "Donuts",
+                            name_en: "Donut",
+                            description_fr: "Beignet rond, frit, souvent glacé ou sucré.",
+                            description_en: "Round, fried pastry, often glazed or sugared.",
+                            price: 1.40,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 36,
+                            name_fr: "Tarte pomme ou abricots",
+                            name_en: "Apple or apricot tart",
+                            description_fr: "Tartelette garnie de pommes ou d'abricots, sur pâte fine.",
+                            description_en: "Tartlet filled with apples or apricots, on a thin crust.",
+                            price: 2.50,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 37,
+                            name_fr: "Gâteaux et verrines",
+                            name_en: "Cakes and dessert cups",
+                            description_fr: "Sélection de petits gâteaux ou desserts en verrine individuelle.",
+                            description_en: "Selection of small cakes or individual dessert cups.",
+                            price: 3.10,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        },
+                        {
+                            id: 38,
+                            name_fr: "Rocher ou passion",
+                            name_en: "Chocolate or passion fruit bite",
+                            description_fr: "Mignardise croustillante au chocolat ou fruit de la passion.",
+                            description_en: "Crunchy chocolate or passion fruit mini pastry.",
+                            price: 3.50,
+                            availability: ["tous les jours"],
+                            availability_en: ["daily"]
+                        }
+                    ]
+                }
+            ]
+        };
+    </script>
+    <script src="app.js"></script>
+</body>
+</html>
