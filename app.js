@@ -6,8 +6,8 @@ let orderItems = [];
 const translations = {
     fr: {
         title: "Commande pour la boulangerie de Goult",
-        "delivery-info": "Livraison chaque matin vers 8h (boulangerie fermée le lundi, sauf exception)",
-        "order-info": "Commande à passer avant 15h la veille par WhatsApp",
+        "delivery-info": "Livraison chaque matin vers 8h (boulangerie fermée le lundi, sauf juillet et août)",
+        "order-info": "Commande à passer avant 11h la veille par WhatsApp",
         "name-label": "Nom / Name :",
         "date-label": "Date de livraison / Delivery date :",
         "show-summary": "Voir Récapitulatif / View Summary",
