@@ -21,8 +21,8 @@ const translations = {
     },
     en: {
         title: "Order form for Goult bakery",
-        "delivery-info": "Delivery every morning around 8 a.m. (bakery closed on Monday, except exception)",
-        "order-info": "Order to be placed before 3 p.m. the day before via WhatsApp",
+        "delivery-info": "Delivery every morning around 8 a.m. (bakery closed on Monday, except July & August)",
+        "order-info": "Order to be placed before 11 a.m. the day before via WhatsApp",
         "name-label": "Name / Nom :",
         "date-label": "Delivery date / Date de livraison :",
         "show-summary": "View Summary / Voir Récapitulatif",
