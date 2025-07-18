@@ -1,12 +1,12 @@
 /* Variables CSS */
 :root {
-    --primary-color: #D4AC8B;
-    --secondary-color: #F5E6D3;
-    --accent-color: #8B4513;
-    --text-color: #333;
-    --background-color: #FEFCF8;
-    --border-color: #E0C9A6;
-    --shadow-color: rgba(212, 172, 139, 0.3);
+  --primary-color: #295128;    /* Vert bouteille foncé */
+  --secondary-color: #E4EFE6;  /* Vert bouteille pâle */
+  --accent-color: #356039;     /* Vert bouteille profond */
+  --text-color: #333;
+  --background-color: #FEFCF8;
+  --border-color: #B1C4A9;     /* Ajusté pour s'harmoniser */
+  --shadow-color: rgba(53, 80, 40, 0.3);
 }
 
 /* Reset et base */
