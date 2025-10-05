@@ -6,9 +6,8 @@ let orderItems = [];
 const translations = {
     fr: {
         title: "Commande pour la boulangerie de Goult",
-        "desktop-info": "Cette application est optimisée pour ordinateur de bureau. Si vous utilisez votre mobile, cochez la case 'version pour ordinateur' pour afficher correctement les produits.",
-        "delivery-info": "Livraison chaque matin vers 8h (boulangerie fermée le lundi, sauf juillet et août)",
-        "order-info": "Commande à passer avant 11h la veille par WhatsApp",
+        "desktop-info": "Notre boulanger déposera votre commande vers 8 h, au pied de l'escalier de la maison annexe, sous le auvent.",
+        "delivery-info": "La boulangerie est fermée le lundi, mais elle assure une livraison pour nous uniquement pendant les mois de juillet et août.",
         "name-label": "Nom / Name :",
         "date-label": "Date de livraison / Delivery date :",
         "show-summary": "Voir Récapitulatif / View Summary",
@@ -22,9 +21,8 @@ const translations = {
     },
     en: {
         title: "Order form for Goult bakery",
-        "desktop-info": "This application is optimized for desktop computers. If you are using your mobile, enable the 'desktop site' option to display the products correctly.",
-        "delivery-info": "Delivery every morning around 8 a.m. (bakery closed on Monday, except July & August)",
-        "order-info": "Order to be placed before 11 a.m. the day before via WhatsApp",
+        "desktop-info": "Our baker will drop off your order around 8 a.m. at the foot of the annex house staircase, under the awning.",
+        "delivery-info": "The bakery is closed on Mondays but provides a delivery just for us during July and August.",
         "name-label": "Name / Nom :",
         "date-label": "Delivery date / Date de livraison :",
         "show-summary": "View Summary / Voir Récapitulatif",
