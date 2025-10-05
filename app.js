@@ -79,20 +79,30 @@ function setupEventListeners() {
     
     // Gestion des accordéons
     setupAccordionListeners();
+
+    // Ajustements dynamiques pour les sections ouvertes
+    window.addEventListener('resize', adjustOpenAccordions);
+    document.addEventListener('languageChanged', adjustOpenAccordions);
 }
 
 // Gestion des accordéons avec correction mobile
 function setupAccordionListeners() {
     const accordionButtons = document.querySelectorAll('.accordion-button');
-    
+
     accordionButtons.forEach(button => {
         // Supprimer anciens listeners
         button.removeEventListener('click', toggleAccordion);
         button.removeEventListener('touchstart', toggleAccordion);
         
         // Ajouter nouveaux listeners
-        button.addEventListener('click', toggleAccordion, { passive: true });
-        button.addEventListener('touchstart', toggleAccordion, { passive: true });
+        button.addEventListener('click', toggleAccordion, { passive: false });
+        button.addEventListener('touchstart', toggleAccordion, { passive: false });
+    });
+}
+
+function adjustOpenAccordions() {
+    document.querySelectorAll('.accordion-collapse.show').forEach(section => {
+        section.style.maxHeight = `${section.scrollHeight}px`;
     });
 }
 
@@ -105,10 +115,11 @@ function toggleAccordion(event) {
     const collapse = document.querySelector(target);
     
     if (!collapse) return;
-    
+
     // Toggle avec animation
     if (collapse.classList.contains('show')) {
         collapse.classList.remove('show');
+        collapse.style.maxHeight = '0px';
         button.setAttribute('aria-expanded', 'false');
         button.classList.add('collapsed');
     } else {
@@ -116,6 +127,7 @@ function toggleAccordion(event) {
         document.querySelectorAll('.accordion-collapse.show').forEach(other => {
             if (other !== collapse) {
                 other.classList.remove('show');
+                other.style.maxHeight = '0px';
                 const otherButton = document.querySelector(`[data-bs-target="#${other.id}"]`);
                 if (otherButton) {
                     otherButton.setAttribute('aria-expanded', 'false');
@@ -123,9 +135,10 @@ function toggleAccordion(event) {
                 }
             }
         });
-        
+
         // Ouvrir cet accordéon
         collapse.classList.add('show');
+        collapse.style.maxHeight = `${collapse.scrollHeight}px`;
         button.setAttribute('aria-expanded', 'true');
         button.classList.remove('collapsed');
     }

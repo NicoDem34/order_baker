@@ -194,14 +194,11 @@ h1 {
 .accordion-collapse {
     overflow: hidden;
     transition: max-height 0.3s ease;
+    max-height: 0;
 }
 
 .accordion-collapse:not(.show) {
     max-height: 0;
-}
-
-.accordion-collapse.show {
-    max-height: 2000px;
 }
 
 .accordion-body {
