@@ -6,7 +6,7 @@ let orderItems = [];
 const translations = {
     fr: {
         title: "Commande pour la boulangerie de Goult",
-        "delivery-info": "Livraison chaque matin vers 8h (boulangerie fermée le lundi, sauf juillet et août)",
+        "delivery-info": "Livraison tous les matins vers 8 h en juillet et août / tous les matins <u>sauf le lundi</u> tout le reste de l'année",
         "order-info": "Commande à passer avant 11h la veille par WhatsApp",
         "name-label": "Nom / Name :",
         "date-label": "Date de livraison / Delivery date :",
@@ -21,7 +21,7 @@ const translations = {
     },
     en: {
         title: "Order form for Goult bakery",
-        "delivery-info": "Delivery every morning around 8 a.m. (bakery closed on Monday, except July & August)",
+        "delivery-info": "Delivery every morning around 8 a.m. in July and August / every morning except Monday during the rest of the year",
         "order-info": "Order to be placed before 11 a.m. the day before via WhatsApp",
         "name-label": "Name / Nom :",
         "date-label": "Delivery date / Date de livraison :",
@@ -268,7 +268,7 @@ function updateLanguage() {
     document.querySelectorAll('[data-lang]').forEach(element => {
         const key = element.getAttribute('data-lang');
         if (translations[currentLang][key]) {
-            element.textContent = translations[currentLang][key];
+            element.innerHTML = translations[currentLang][key];
         }
     });
 }
