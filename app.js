@@ -6,6 +6,7 @@ let orderItems = [];
 const translations = {
     fr: {
         title: "Commande pour la boulangerie de Goult",
+        "desktop-info": "Cette application est optimisée pour ordinateur de bureau. Si vous utilisez votre mobile, cochez la case 'version pour ordinateur' pour afficher correctement les produits.",
         "delivery-info": "Livraison chaque matin vers 8h (boulangerie fermée le lundi, sauf juillet et août)",
         "order-info": "Commande à passer avant 11h la veille par WhatsApp",
         "name-label": "Nom / Name :",
@@ -21,6 +22,7 @@ const translations = {
     },
     en: {
         title: "Order form for Goult bakery",
+        "desktop-info": "This application is optimized for desktop computers. If you are using your mobile, enable the 'desktop site' option to display the products correctly.",
         "delivery-info": "Delivery every morning around 8 a.m. (bakery closed on Monday, except July & August)",
         "order-info": "Order to be placed before 11 a.m. the day before via WhatsApp",
         "name-label": "Name / Nom :",
