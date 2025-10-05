@@ -96,6 +96,13 @@ h1 {
     color: var(--accent-color);
 }
 
+.info-section .info-subtext {
+    font-weight: 400;
+    color: var(--text-color);
+    margin-top: 6px;
+    line-height: 1.5;
+}
+
 /* Informations client */
 .customer-info {
     display: grid;
