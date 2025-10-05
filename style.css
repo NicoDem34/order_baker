@@ -91,6 +91,11 @@ h1 {
     font-weight: 500;
 }
 
+.info-section .desktop-notice {
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
 /* Informations client */
 .customer-info {
     display: grid;
